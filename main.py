@@ -18,7 +18,6 @@ def savePageToSheet(pageCards, ws):
         title, full_link, time, paragraph, photo_link = scrapCard(card)
 
         row = ws.max_row
-
         ws.cell(row=row, column=1).value = title
         ws.cell(row=row, column=2).value = time
         ws.cell(row=row, column=3).value = paragraph
@@ -26,14 +25,15 @@ def savePageToSheet(pageCards, ws):
         ws.cell(row=row, column=5).value = photo_link
 
 
+def scrapSite(ws):
+
+    response = requests.get(f'https://www.zewailcity.edu.eg/main/content.php?lang=en&alias=recent_news')
+    lastPageCard = BeautifulSoup(response.text, 'lxml').find('div', class_='page_num').ul.find_all('li')[-2]
+    lastPageNum = int(lastPageCard.text)
 
 
-def scrapSite():
-
-    wb = Workbook()
-    ws = wb.active
-
-    for page in range(1,2):
+    for page in range(1,lastPageNum+1):
+        
         response = requests.get(f'https://www.zewailcity.edu.eg/main/content.php?lang=en&alias=recent_news&page={page}')
 
         soap = BeautifulSoup(response.text,'lxml')
@@ -43,24 +43,24 @@ def scrapSite():
 
 
 
+def main():
+    wb = Workbook()
+    ws = wb.active
+
+    scrapSite(ws)
 
     try:
-        wb.save('zc-news')
+        wb.save('../output/zc-news')
     except:
-        i=0
+        i = 0
         while True:
             try:
                 i += 1
-                wb.save(f'zc-news-{i}')
+                wb.save(f'../output/zc-news-{i}')
                 return
             except:
                 pass
 
-
-
-
-def main():
-    scrapSite()
 
 
 if __name__ == '__main__':
