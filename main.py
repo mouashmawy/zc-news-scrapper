@@ -42,6 +42,23 @@ def scrapSite():
         savePageToSheet(pageCards, ws)
 
 
+
+
+    try:
+        wb.save('zc-news')
+    except:
+        i=0
+        while True:
+            try:
+                i += 1
+                wb.save(f'zc-news-{i}')
+                return
+            except:
+                pass
+
+
+
+
 def main():
     scrapSite()
 
