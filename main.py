@@ -4,12 +4,25 @@ from openpyxl import Workbook
 
 
 def scrapCard(card):
-    title = card.find('h3').find('a').text
-    link = card.find('h3').find('a')['href']
+
+    try: title = card.find('h3').find('a').text
+    except: title = 'x'
+
+    try: link = card.find('h3').find('a')['href']
+    except: link = "x"
     full_link = 'https://zewailcity.edu.eg/main/' + link
-    time = card.time.em.strong.text
-    paragraph = card.find('div', class_='news-text').p.text
-    photo = card.img['src'].replace('../', 'https://www.zewailcity.edu.eg/')
+
+    try: time = card.time.em.strong.text
+    except: time = "x"
+
+    try: paragraph = card.find('div', class_='news-text').p.text
+    except:
+        try: paragraph = card.find('div', class_='news-text').div.text
+        except:paragraph = 'x'
+
+    try: photo = card.img['src'].replace('../', 'https://www.zewailcity.edu.eg/')
+    except: photo = 'x'
+
     return title, full_link, time, paragraph, photo
 
 
