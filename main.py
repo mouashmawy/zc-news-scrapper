@@ -45,15 +45,15 @@ def scrapSite(ws):
     lastPageNum = int(lastPageCard.text)
 
 
-    for page in range(1,lastPageNum+1):
-        
+    for page in range(1,2):
+        print(page)
         response = requests.get(f'https://www.zewailcity.edu.eg/main/content.php?lang=en&alias=recent_news&page={page}')
 
         soap = BeautifulSoup(response.text,'lxml')
         pageCards = soap.find_all('div', class_= 'news-content clearfix')
 
         savePageToSheet(pageCards, ws)
-
+        print(page)
 
 
 def main():
@@ -63,13 +63,15 @@ def main():
     scrapSite(ws)
 
     try:
-        wb.save('../output/zc-news')
+        wb.save('./output/zc-news.xlsx')
+        print(f'saved in ./output/zc-news.xlsx')
     except:
         i = 0
         while True:
             try:
                 i += 1
-                wb.save(f'../output/zc-news-{i}')
+                wb.save(f'./output/zc-news-{i}.xlsx')
+                print(f'saved in ./output/zc-news-{i}.xlsx')
                 return
             except:
                 pass
