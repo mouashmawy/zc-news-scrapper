@@ -51,13 +51,12 @@ def scrapSite(ws):
     lastPageNum = int(lastPageCard.text)
 
 
-    for page in range(1,2):
+    for page in range(1,lastPageNum+1):
         response = requests.get(f'https://www.zewailcity.edu.eg/main/content.php?lang=en&alias=recent_news&page={page}')
-
         soap = BeautifulSoup(response.text,'lxml')
         pageCards = soap.find_all('div', class_= 'news-content clearfix')
-
         savePageToSheet(pageCards, ws)
+        print(f'page {page} finished.. ({round(page/lastPageNum*100,2)}%)')
 
 
 def addExcelHeader(ws):
