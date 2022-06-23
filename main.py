@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 import os
+import datetime
+
 
 def scrapCard(card):
 
@@ -33,13 +35,13 @@ def savePageToSheet(pageCards, ws):
         row = ws.max_row+1
         ws.cell(row=row, column=1).value = title
         ws.cell(row=row, column=2).value = time
-        ws.cell(row=row, column=3).value = paragraph
-        ws.cell(row=row, column=4).value = 'link'
-        ws.cell(row=row, column=4).hyperlink = full_link
+        ws.cell(row=row, column=3).value = 'link'
+        ws.cell(row=row, column=3).hyperlink = full_link
+        ws.cell(row=row, column=3).style = "Hyperlink"
+        ws.cell(row=row, column=4).value = 'photo'
+        ws.cell(row=row, column=4).hyperlink = photo_link
         ws.cell(row=row, column=4).style = "Hyperlink"
-        ws.cell(row=row, column=5).value = 'photo'
-        ws.cell(row=row, column=5).hyperlink = photo_link
-        ws.cell(row=row, column=5).style = "Hyperlink"
+        ws.cell(row=row, column=5).value = paragraph
 
 
 def scrapSite(ws):
@@ -59,12 +61,21 @@ def scrapSite(ws):
 
 
 def addExcelHeader(ws):
-    ws['A1'] = 'This excel contains data scrapped from Zewail City news from website creation and until today.'
+    today = datetime.date.today()
+    ws['A1'] = f'This excel contains data scrapped from Zewail City news from website creation and until {today}.'
     ws.cell(row=2, column=1).value = 'title'
     ws.cell(row=2, column=2).value = 'time'
-    ws.cell(row=2, column=3).value = 'paragraph'
-    ws.cell(row=2, column=4).value = 'full_link'
-    ws.cell(row=2, column=5).value = 'photo_link'
+    ws.cell(row=2, column=3).value = 'full_link'
+    ws.cell(row=2, column=4).value = 'photo_link'
+    ws.cell(row=2, column=5).value = 'paragraph'
+
+
+def excelStyling(ws):
+    ws.column_dimensions['A'].width =80
+    ws.column_dimensions['B'].width = 19
+    ws.column_dimensions['C'].width = 8.11 #default
+    ws.column_dimensions['D'].width = 8.11 #default
+    ws.column_dimensions['E'].width = 80
 
 
 
@@ -74,6 +85,8 @@ def main():
 
     addExcelHeader(ws)
     scrapSite(ws)
+    excelStyling(ws)
+
 
     try:
         if not os.path.exists('./output'):
