@@ -34,8 +34,12 @@ def savePageToSheet(pageCards, ws):
         ws.cell(row=row, column=1).value = title
         ws.cell(row=row, column=2).value = time
         ws.cell(row=row, column=3).value = paragraph
-        ws.cell(row=row, column=4).value = full_link
-        ws.cell(row=row, column=6).value = photo_link
+        ws.cell(row=row, column=4).value = 'link'
+        ws.cell(row=row, column=4).hyperlink = full_link
+        ws.cell(row=row, column=4).style = "Hyperlink"
+        ws.cell(row=row, column=5).value = 'photo'
+        ws.cell(row=row, column=5).hyperlink = photo_link
+        ws.cell(row=row, column=5).style = "Hyperlink"
 
 
 def scrapSite(ws):
