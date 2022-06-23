@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
-
+import os
 
 def scrapCard(card):
 
@@ -30,12 +30,12 @@ def savePageToSheet(pageCards, ws):
     for card in pageCards:
         title, full_link, time, paragraph, photo_link = scrapCard(card)
 
-        row = ws.max_row
+        row = ws.max_row+1
         ws.cell(row=row, column=1).value = title
         ws.cell(row=row, column=2).value = time
         ws.cell(row=row, column=3).value = paragraph
         ws.cell(row=row, column=4).value = full_link
-        ws.cell(row=row, column=5).value = photo_link
+        ws.cell(row=row, column=6).value = photo_link
 
 
 def scrapSite(ws):
@@ -46,23 +46,34 @@ def scrapSite(ws):
 
 
     for page in range(1,2):
-        print(page)
         response = requests.get(f'https://www.zewailcity.edu.eg/main/content.php?lang=en&alias=recent_news&page={page}')
 
         soap = BeautifulSoup(response.text,'lxml')
         pageCards = soap.find_all('div', class_= 'news-content clearfix')
 
         savePageToSheet(pageCards, ws)
-        print(page)
+
+
+def addExcelHeader(ws):
+    ws['A1'] = 'This excel contains data scrapped from Zewail City news from website creation and until today.'
+    ws.cell(row=2, column=1).value = 'title'
+    ws.cell(row=2, column=2).value = 'time'
+    ws.cell(row=2, column=3).value = 'paragraph'
+    ws.cell(row=2, column=4).value = 'full_link'
+    ws.cell(row=2, column=5).value = 'photo_link'
+
 
 
 def main():
     wb = Workbook()
     ws = wb.active
 
+    addExcelHeader(ws)
     scrapSite(ws)
 
     try:
+        if not os.path.exists('./output'):
+            os.makedirs('./output')
         wb.save('./output/zc-news.xlsx')
         print(f'saved in ./output/zc-news.xlsx')
     except:
@@ -75,8 +86,6 @@ def main():
                 return
             except:
                 pass
-
-
 
 if __name__ == '__main__':
     main()
